@@ -10,7 +10,16 @@ export interface Factory<T> extends DisposableLike {
 	create(): Promise<T>;
 }
 
-export interface Financial {
+/**
+ * Represent financial amount type.
+ * The value is presented as stringified integer value with number of fraction digits.
+ * The type doesn't have any limit to digits count and doesn't vulnerable rounding precision.
+ * @example 
+ * const moneyAmount: FinancialLike = ...
+ * const amount: number = parseInt(moneyAmount.value) / moneyAmount.fraction
+ * // amount is number value of moneyAmount
+ */
+export interface FinancialLike {
 	readonly value: string;
 	readonly fraction: number;
 }
