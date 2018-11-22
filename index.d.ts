@@ -10,6 +10,11 @@ export interface Factory<T> extends DisposableLike {
 	create(): Promise<T>;
 }
 
+export interface Financial {
+	readonly value: string;
+	readonly fraction: number;
+}
+
 export declare namespace collections {
 	interface EnumeratorLike<T> {
 		reset(): void | Promise<void>;
