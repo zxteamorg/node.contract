@@ -1,0 +1,27 @@
+{
+	"name": "@zxteam/contract",
+	"version": "0.0.0-pre000",
+	"description": "TBD",
+	"author": {
+		"name": "Maxim Anurin",
+		"email": "maxim.anurin@zxteam.org",
+		"url": "http://www.anurin.name"
+	},
+	"contributors": [
+		{
+			"name": "Serg Zgama",
+			"email": "serg.zgama@zxteam.org"
+		}
+	],
+	"license": "MIT",
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "ssh://git@dev.zxteam.net:22282/pub/node/contract.git"
+	},
+	"bugs": {
+		"url": "https://dev.zxteam.net/pub/node/contract/issues"
+	},
+	"homepage": "https://dev.zxteam.net/pub/node/contract",
+	"types": "./index.d.ts"
+}
