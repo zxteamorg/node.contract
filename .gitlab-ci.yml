@@ -18,8 +18,6 @@ stages:
 
 publish to npmjs.artifacts.zxteam.net:
   stage: publish
-  dependencies:
-    - build
   before_script:
     - *utils
     - verify_package_version
