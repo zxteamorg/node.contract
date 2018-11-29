@@ -23,7 +23,7 @@ publish:
     - verify_package_version
     - setup_npm_token
   script:
-    - cd .dist && npm publish
+    - npm publish
   only:
     - tags
 
