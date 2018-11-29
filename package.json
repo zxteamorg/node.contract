@@ -1,7 +1,7 @@
 {
 	"name": "@zxteam/contract",
-	"version": "0.0.1",
-	"description": "TBD",
+	"version": "1.0.0",
+	"description": "ZXTeam's Contract interfaces",
 	"author": {
 		"name": "Maxim Anurin",
 		"email": "maxim.anurin@zxteam.org",
