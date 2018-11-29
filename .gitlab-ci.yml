@@ -1,4 +1,4 @@
-image: node:8
+image: node:10-alpine
 
 .scripting: &utils |
   function setup_npm_token() {
@@ -6,23 +6,24 @@ image: node:8
   }
   function verify_package_version() {
     local PACKAGE_VERSION=$(awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json)
-    echo "Tag $CI_COMMIT_REF_NAME . Package $PACKAGE_VERSION"
-    if [ $PACKAGE_VERSION != $CI_COMMIT_REF_NAME ]; then
-      echo "Package version ${PACKAGE_VERSION} is not same as tag version ${CI_COMMIT_REF_NAME}" >&2
+    if [ "$PACKAGE_VERSION" != "$CI_COMMIT_REF_NAME" ]; then
+      echo "Package version '${PACKAGE_VERSION}; is not same as tag version '${CI_COMMIT_REF_NAME}'" >&2
       exit 255
     fi
   }
 
+
 stages:
   - publish
 
-publish to npmjs.artifacts.zxteam.net:
+publish:
   stage: publish
   before_script:
     - *utils
     - verify_package_version
     - setup_npm_token
   script:
-    - npm publish --access=public
+    - cd .dist && npm publish
   only:
     - tags
+

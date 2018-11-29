@@ -6,6 +6,7 @@ export interface InitableLike extends DisposableLike {
 	init(): Promise<void>;
 }
 
+
 export interface Factory<T> extends DisposableLike {
 	create(): Promise<T>;
 }
@@ -61,18 +62,18 @@ export declare namespace communication {
 		 */
 		cb: ((data: TProtocol | Error) => void | Promise<void>) | null;
 	}
-	/** Define some kind of a transport for RPC implementations */
-	interface TransportLike extends DisposableLike {
-		invoke<TIn, TOut>(data: TIn): Promise<TOut>;
-		stream<TMetadata>(data: TMetadata): Promise<io.StreamLike>;
-	}
+	// /** Define some kind of a transport for RPC implementations */
+	// interface TransportLike extends DisposableLike {
+	// 	invoke<TIn, TOut>(data: TIn): Promise<TOut>;
+	// 	stream<TMetadata>(data: TMetadata): Promise<io.StreamLike>;
+	// }
 }
 
 export declare namespace data {
 
 	namespace sql {
 		type SqlStatementParam = boolean | string | number | Date | Uint8Array
-			| Array<string> | Array<number> | Array<Date> | Array<Uint8Array>;
+			| Array<string> | Array<number> | Array<Date> | Array<Uint8Array> | FinancialLike;
 
 		// const enum SqlType {
 		// 	BINARY,
@@ -95,6 +96,8 @@ export declare namespace data {
 			readonly asNullableString: string | null;
 			readonly asNumber: number;
 			readonly asNullableNumber: number | null;
+			readonly asFinancial: FinancialLike;
+			readonly asNullableFinancial: FinancialLike | null;
 			readonly asDate: Date;
 			readonly asNullableDate: Date | null;
 			readonly asBinary: Uint8Array;
@@ -206,12 +209,13 @@ export declare namespace log {
 		isWarnEnabled(): boolean;
 		isErrorEnabled(): boolean;
 		isFatalEnabled(): boolean;
-		trace(message: any, ...args: any[]): void;
-		debug(message: any, ...args: any[]): void;
-		info(message: any, ...args: any[]): void;
-		warn(message: any, ...args: any[]): void;
-		error(message: any, ...args: any[]): void;
-		fatal(message: any, ...args: any[]): void;
+	
+		trace(message: string, ...args: any[]): void;
+		debug(message: string, ...args: any[]): void;
+		info(message: string, ...args: any[]): void;
+		warn(message: string, ...args: any[]): void;
+		error(message: string, ...args: any[]): void;
+		fatal(message: string, ...args: any[]): void;
 	}
 }
 
