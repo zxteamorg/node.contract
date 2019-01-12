@@ -9,6 +9,9 @@ export interface InitableLike extends DisposableLike {
 export interface Factory<T> {
 	create(): Promise<T>;
 }
+export interface FactorySync<T> {
+	createSync(): T;
+}
 
 /**
  * Represent financial amount type.
