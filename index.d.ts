@@ -6,8 +6,7 @@ export interface InitableLike extends DisposableLike {
 	init(): Promise<void>;
 }
 
-
-export interface Factory<T> extends DisposableLike {
+export interface Factory<T> {
 	create(): Promise<T>;
 }
 
