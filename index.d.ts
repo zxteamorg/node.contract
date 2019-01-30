@@ -1,3 +1,20 @@
+export interface CancellationTokenLike {
+	readonly isCancellationRequested: boolean;
+	addCancelListener(cb: Function): void;
+	removeCancelListener(cb: Function): void;
+	throwIfCancellationRequested(): void;
+}
+
+export interface ConfigurationLike {
+	getBoolean(key: string, defaultValue?: boolean): boolean;
+	getConfiguration(configurationNamespace: string): ConfigurationLike;
+	getEnabled(key: string, defaultValue?: boolean): boolean;
+	getFloat(key: string, defaultValue?: number): number;
+	getInt(key: string, defaultValue?: number): number;
+	getObject<T>(key: string, defaultValue?: T): T;
+	getString(key: string, defaultValue?: string): string;
+}
+
 export interface DisposableLike {
 	dispose(): Promise<void>;
 }
@@ -9,6 +26,7 @@ export interface InitableLike extends DisposableLike {
 export interface Factory<T> {
 	create(): Promise<T>;
 }
+
 export interface FactorySync<T> {
 	createSync(): T;
 }
@@ -19,12 +37,58 @@ export interface FactorySync<T> {
  * The type doesn't have any limit to digits count and doesn't vulnerable rounding precision.
  * @example 
  * const moneyAmount: FinancialLike = ...
- * const amount: number = parseInt(moneyAmount.value) / moneyAmount.fraction
- * // amount is number value of moneyAmount
+ * const amount: number = parseInt(moneyAmount.value) / (10 ^ moneyAmount.fraction)
  */
 export interface FinancialLike {
 	readonly value: string;
 	readonly fraction: number;
+}
+
+export interface LoggerLike {
+	readonly isTraceEnabled: boolean;
+	readonly isDebugEnabled: boolean;
+	readonly isInfoEnabled: boolean;
+	readonly isWarnEnabled: boolean;
+	readonly isErrorEnabled: boolean;
+	readonly isFatalEnabled: boolean;
+
+	trace(message: string, ...args: any[]): void;
+	debug(message: string, ...args: any[]): void;
+	info(message: string, ...args: any[]): void;
+	warn(message: string, ...args: any[]): void;
+	error(message: string, ...args: any[]): void;
+	fatal(message: string, ...args: any[]): void;
+}
+
+export interface BinarySerializerLike<T> {
+	/**
+	 * Serialize an object to binary sequence.
+	 * @param obj The object to be serialized.
+	 */
+	serializeToBinary(obj: T): ArrayBuffer;
+
+	/**
+	 * Deserialize an object.
+	 * @param source The array buffer that contains bytes to deserialize.
+	 */
+	deserializeFromBinary(source: ArrayBuffer): T;
+}
+export interface StreamSerializerLike<T> {
+	/**
+	 * Serialization is the process of representing an object to binary sequence.
+	 * @param obj The object to be serialized.
+	 * @param target The target IStream for write binary representation.
+	 * @throws {Error("Invalid operation")} An error occurred during serialization. The original exception is available using the innerException property.
+	 */
+	serializeToStream(obj: T, target: io.StreamLike): Promise<void>;
+
+	/**
+	 * Deserialization is the process of reading bytes from IStream
+	 * and constructing an object.
+	 * @param source The IStream that contains bytes to deserialize.
+	 * @throws {Error("Invalid operation")} An error occurred during serialization. The original exception is available using the innerException property.
+	 */
+	deserializeFromStream(source: io.StreamLike): Promise<T>;
 }
 
 export declare namespace collections {
@@ -38,41 +102,29 @@ export declare namespace collections {
 	}
 }
 
-export declare namespace configuration {
-	interface ConfigurationLike {
-		getBoolean(key: string, defaultValue?: boolean): boolean;
-		getConfiguration(configurationNamespace: string): ConfigurationLike;
-		getEnabled(key: string, defaultValue?: boolean): boolean;
-		getFloat(key: string, defaultValue?: number): number;
-		getInt(key: string, defaultValue?: number): number;
-		getObject<T>(key: string, defaultValue?: T): T;
-		getString(key: string, defaultValue?: string): string;
-	}
+
+/** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
+export interface PublisherLike<TProtocol> extends DisposableLike {
+	send(data: TProtocol): Promise<void>;
 }
 
-export declare namespace communication {
-	/** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-	export interface PublisherLike<TProtocol> extends DisposableLike {
-		send(data: TProtocol): Promise<void>;
-	}
-	/** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-	export interface SubscriberLike<TProtocol> extends DisposableLike {
-		/** The callback function reference.
-		 * You can set null to the property to temporary disable notification.
-		 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
-		 * Note: after receive data as Error the subscriber destroyed and never call callback again.
-		 */
-		cb: ((data: TProtocol | Error) => void | Promise<void>) | null;
-	}
+/** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
+export interface SubscriberLike<TProtocol> extends DisposableLike {
+	/** The callback function reference.
+	 * You can set null to the property to temporary disable notification.
+	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
+	 * Note: after receive data as Error the subscriber destroyed and never call callback again.
+	 */
+	cb: ((data: TProtocol | Error) => void | Promise<void>) | null;
+}
 
-	/** Define some kind of a transport for RPC implementations */
-	export interface InvokeTransportLike<TIn, TOut> extends DisposableLike {
-		invoke(data: TIn): Promise<TOut>;
-	}
+/** Define some kind of a transport for RPC implementations */
+export interface InvokeTransportLike<TIn, TOut> extends DisposableLike {
+	invoke(data: TIn): Promise<TOut>;
+}
 
-	export interface StreamTransportLike<TMetadata> extends DisposableLike {
-		stream(data: TMetadata): Promise<io.StreamLike>;
-	}
+export interface StreamTransportLike<TMetadata> extends DisposableLike {
+	stream(data: TMetadata): Promise<io.StreamLike>;
 }
 
 export declare namespace data {
@@ -198,56 +250,5 @@ export declare namespace io {
 		 * @throws {Error("Object disposed")} Methods were called after the stream was disposed(closed).
 		 */
 		write(buf: ArrayBuffer, offset?: number, count?: number): Promise<void>;
-	}
-}
-
-export declare namespace log {
-	export interface LoggerLike {
-		isTraceEnabled(): boolean;
-		isDebugEnabled(): boolean;
-		isInfoEnabled(): boolean;
-		isWarnEnabled(): boolean;
-		isErrorEnabled(): boolean;
-		isFatalEnabled(): boolean;
-
-		trace(message: string, ...args: any[]): void;
-		debug(message: string, ...args: any[]): void;
-		info(message: string, ...args: any[]): void;
-		warn(message: string, ...args: any[]): void;
-		error(message: string, ...args: any[]): void;
-		fatal(message: string, ...args: any[]): void;
-	}
-}
-
-export declare namespace serialization {
-	export interface BinarySerializer<T> {
-		/**
-		 * Serialize an object to binary sequence.
-		 * @param obj The object to be serialized.
-		 */
-		serializeToBinary(obj: T): ArrayBuffer;
-
-		/**
-		 * Deserialize an object.
-		 * @param source The array buffer that contains bytes to deserialize.
-		 */
-		deserializeFromBinary(source: ArrayBuffer): T;
-	}
-	export interface SerializerLike<T> {
-		/**
-		 * Serialization is the process of representing an object to binary sequence.
-		 * @param obj The object to be serialized.
-		 * @param target The target IStream for write binary representation.
-		 * @throws {Error("Invalid operation")} An error occurred during serialization. The original exception is available using the innerException property.
-		 */
-		serializeToStream(obj: T, target: io.StreamLike): Promise<void>;
-
-		/**
-		 * Deserialization is the process of reading bytes from IStream
-		 * and constructing an object.
-		 * @param source The IStream that contains bytes to deserialize.
-		 * @throws {Error("Invalid operation")} An error occurred during serialization. The original exception is available using the innerException property.
-		 */
-		deserializeFromStream(source: io.StreamLike): Promise<T>;
 	}
 }
