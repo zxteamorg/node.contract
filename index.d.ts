@@ -1,3 +1,17 @@
+export interface BinarySerializerLike<T> {
+	/**
+	 * Serialize an object to binary sequence.
+	 * @param obj The object to be serialized.
+	 */
+	serializeToBinary(obj: T): ArrayBuffer;
+
+	/**
+	 * Deserialize an object.
+	 * @param source The array buffer that contains bytes to deserialize.
+	 */
+	deserializeFromBinary(source: ArrayBuffer): T;
+}
+
 export interface CancellationTokenLike {
 	readonly isCancellationRequested: boolean;
 	addCancelListener(cb: Function): void;
@@ -60,19 +74,6 @@ export interface LoggerLike {
 	fatal(message: string, ...args: any[]): void;
 }
 
-export interface BinarySerializerLike<T> {
-	/**
-	 * Serialize an object to binary sequence.
-	 * @param obj The object to be serialized.
-	 */
-	serializeToBinary(obj: T): ArrayBuffer;
-
-	/**
-	 * Deserialize an object.
-	 * @param source The array buffer that contains bytes to deserialize.
-	 */
-	deserializeFromBinary(source: ArrayBuffer): T;
-}
 export interface StreamSerializerLike<T> {
 	/**
 	 * Serialization is the process of representing an object to binary sequence.
@@ -89,6 +90,34 @@ export interface StreamSerializerLike<T> {
 	 * @throws {Error("Invalid operation")} An error occurred during serialization. The original exception is available using the innerException property.
 	 */
 	deserializeFromStream(source: io.StreamLike): Promise<T>;
+}
+
+export interface TaskLike<T> extends PromiseLike<T> {
+	readonly error: Error;
+	readonly result: T;
+
+	/**
+	 * Returns true if any of isSuccessed, isFaulted, isCancelled returns true
+	 */
+	readonly isCompleted: boolean;
+
+	/**
+	 * Task completed succesfully. You can read result value.
+	 */
+	readonly isSuccessed: boolean;
+
+	/**
+	 * Task completed with error. You can read error value.
+	 */
+	readonly isFaulted: boolean;
+
+	/**
+	 * Task completed with error. You cannot read nor result nor error value.
+	 */
+	readonly isCancelled: boolean;
+
+	then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): PromiseLike<TResult1 | TResult2>;
+	catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): PromiseLike<T | TResult>;
 }
 
 export declare namespace collections {
