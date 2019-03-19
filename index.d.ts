@@ -1,4 +1,4 @@
-export interface SerializerLike<T> {
+export interface Serializer<T> {
 	/**
 	 * Serialize an object to binary sequence.
 	 * @param obj The object to be serialized.
@@ -12,16 +12,16 @@ export interface SerializerLike<T> {
 	deserialize(source: ArrayBuffer): T;
 }
 
-export interface CancellationTokenLike {
+export interface CancellationToken {
 	readonly isCancellationRequested: boolean;
 	addCancelListener(cb: Function): void;
 	removeCancelListener(cb: Function): void;
 	throwIfCancellationRequested(): void;
 }
 
-export interface ConfigurationLike {
+export interface Configuration {
 	getBoolean(key: string, defaultValue?: boolean): boolean;
-	getConfiguration(configurationNamespace: string): ConfigurationLike;
+	getConfiguration(configurationNamespace: string): Configuration;
 	getEnabled(key: string, defaultValue?: boolean): boolean;
 	getFloat(key: string, defaultValue?: number): number;
 	getInt(key: string, defaultValue?: number): number;
@@ -29,16 +29,16 @@ export interface ConfigurationLike {
 	getString(key: string, defaultValue?: string): string;
 }
 
-export interface DisposableLike {
-	dispose(): Promise<void>;
+export interface Disposable {
+	dispose(): Task<void>;
 }
 
-export interface InitableLike extends DisposableLike {
-	init(): Promise<void>;
+export interface Initable extends Disposable {
+	init(): Task<void>;
 }
 
 export interface Factory<T> {
-	create(): Promise<T>;
+	create(cancellationToken?: CancellationToken): Task<T>;
 }
 
 export interface FactorySync<T> {
@@ -53,12 +53,12 @@ export interface FactorySync<T> {
  * const moneyAmount: FinancialLike = ...
  * const amount: number = parseInt(moneyAmount.value) / (10 ^ moneyAmount.fraction)
  */
-export interface FinancialLike {
+export interface Financial {
 	readonly value: string;
 	readonly fraction: number;
 }
 
-export interface LoggerLike {
+export interface Logger {
 	readonly isTraceEnabled: boolean;
 	readonly isDebugEnabled: boolean;
 	readonly isInfoEnabled: boolean;
@@ -92,7 +92,7 @@ export interface LoggerLike {
 // 	deserializeFromStream(source: io.StreamLike): Promise<T>;
 // }
 
-export interface TaskLike<T> extends PromiseLike<T> {
+export interface Task<T> extends Promise<T> {
 	readonly error: Error;
 	readonly result: T;
 
@@ -116,8 +116,20 @@ export interface TaskLike<T> extends PromiseLike<T> {
 	 */
 	readonly isCancelled: boolean;
 
-	then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): PromiseLike<TResult1 | TResult2>;
-	catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): PromiseLike<T | TResult>;
+	/**
+	 * Attaches callbacks for the resolution and/or rejection of the Promise.
+	 * @param onfulfilled The callback to execute when the Promise is resolved.
+	 * @param onrejected The callback to execute when the Promise is rejected.
+	 * @returns A Promise for the completion of which ever callback is executed.
+	 */
+	then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+
+	/**
+	 * Attaches a callback for only the rejection of the Promise.
+	 * @param onrejected The callback to execute when the Promise is rejected.
+	 * @returns A Promise for the completion of the callback.
+	 */
+	catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
 }
 
 // export declare namespace collections {
@@ -132,12 +144,12 @@ export interface TaskLike<T> extends PromiseLike<T> {
 // }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface PublisherLike<TProtocol> extends DisposableLike {
-	send(data: TProtocol, cancellationToken?: CancellationTokenLike): Promise<void>;
+export interface Publisher<TProtocol> extends Disposable {
+	send(data: TProtocol, cancellationToken?: CancellationToken): Task<void>;
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface SubscriberLike<TProtocol> extends DisposableLike {
+export interface Subscriber<TProtocol> extends Disposable {
 	/** The callback function reference.
 	 * You can set null to the property to temporary disable notification.
 	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
@@ -147,8 +159,8 @@ export interface SubscriberLike<TProtocol> extends DisposableLike {
 }
 
 /** Define some kind of a transport for RPC implementations */
-export interface InvokeTransportLike<TIn, TOut> extends DisposableLike {
-	invoke(args: TIn, cancellationToken?: CancellationTokenLike): Promise<TOut>;
+export interface InvokeTransport<TIn, TOut> extends Disposable {
+	invoke(args: TIn, cancellationToken?: CancellationToken): Task<TOut>;
 }
 
 //export interface StreamTransportLike<TMetadata> extends DisposableLike {
@@ -280,3 +292,28 @@ export interface InvokeTransportLike<TIn, TOut> extends DisposableLike {
 // 		write(buf: ArrayBuffer, offset?: number, count?: number): Promise<void>;
 // 	}
 // }
+
+/*
+ * 
+ *  _____                              
+ * | ____| _ __  _ __  ___   _ __  ___ 
+ * |  _|  | '__|| '__|/ _ \ | '__|/ __|
+ * | |___ | |   | |  | (_) || |   \__ \
+ * |_____||_|   |_|   \___/ |_|   |___/
+ * 
+ */
+
+export interface ArgumentError extends Error {
+	readonly name: "ArgumentError";
+}
+export class AggregateError extends Error {
+	readonly name: "AggregateError";
+	readonly innerError: Error;
+	readonly innerErrors: Array<Error>;
+}
+export interface CancelledError extends Error {
+	readonly name: "CancelledError";
+}
+export interface InvalidOperationError extends Error {
+	readonly name: "InvalidOperationError";
+}
