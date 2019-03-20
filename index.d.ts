@@ -30,11 +30,11 @@ export interface Configuration {
 }
 
 export interface Disposable {
-	dispose(): Task<void>;
+	dispose(): Task;
 }
 
 export interface Initable extends Disposable {
-	init(): Task<void>;
+	init(): Task;
 }
 
 export interface Factory<T> {
@@ -92,7 +92,7 @@ export interface Logger {
 // 	deserializeFromStream(source: io.StreamLike): Promise<T>;
 // }
 
-export interface Task<T> extends Promise<T> {
+export interface Task<T = void> extends Promise<T> {
 	readonly error: Error;
 	readonly result: T;
 
