@@ -152,7 +152,7 @@ export interface Task<T = void> extends Promise<T> {
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
 export interface Publisher<TProtocol> extends Disposable {
-	send(data: TProtocol, cancellationToken?: CancellationToken): Task<void>;
+	send(cancellationToken: CancellationToken, data: TProtocol): Task<void>;
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
@@ -162,12 +162,12 @@ export interface Subscriber<TProtocol> extends Disposable {
 	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
 	 * Note: after receive data as Error the subscriber destroyed and never call callback again.
 	 */
-	cb: ((data: TProtocol | Error) => void | Promise<void>) | null;
+	cb: ((cancellationToken: CancellationToken, data: TProtocol | Error) => void | Promise<void>) | null;
 }
 
 /** Define some kind of a transport for RPC implementations */
 export interface InvokeTransport<TIn, TOut> extends Disposable {
-	invoke(args: TIn, cancellationToken?: CancellationToken): Task<TOut>;
+	invoke(cancellationToken: CancellationToken, args: TIn): Task<TOut>;
 }
 
 //export interface StreamTransportLike<TMetadata> extends DisposableLike {
