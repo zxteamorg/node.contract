@@ -130,6 +130,13 @@ export interface Task<T = void> extends Promise<T> {
 	 * @returns A Promise for the completion of the callback.
 	 */
 	catch<TResult = never>(onrejected?: ((reason: Error) => TResult | PromiseLike<TResult>) | undefined | null): Task<T | TResult>;
+
+	/**
+	 * Create a wait promise.
+	 * The promise will resolve when task completed.
+	 * The promise never reject.
+	 */
+	wait(): Promise<void>;
 }
 
 // export declare namespace collections {

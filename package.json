@@ -1,6 +1,6 @@
 {
 	"name": "@zxteam/contract",
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"description": "ZXTeam's Contract interfaces",
 	"author": {
 		"name": "Maxim Anurin",
@@ -9,8 +9,8 @@
 	},
 	"contributors": [
 		{
-			"name": "Serg Zgama",
-			"email": "serg.zgama@zxteam.org"
+			"name": "Serhii Zghama",
+			"email": "serhii.zghama@zxteam.org"
 		}
 	],
 	"license": "MIT",
