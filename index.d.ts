@@ -34,7 +34,7 @@ export interface Disposable {
 }
 
 export interface Initable extends Disposable {
-	init(): Task;
+	init(): Task<this>;
 }
 
 export interface Factory<T> {
