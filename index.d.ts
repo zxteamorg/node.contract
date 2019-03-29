@@ -156,14 +156,20 @@ export interface Publisher<TProtocol> extends Disposable {
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface Subscriber<TProtocol> extends Disposable {
+export interface Subscriber<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> extends Disposable {
 	/** The callback function reference.
 	 * You can set null to the property to temporary disable notification.
 	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
 	 * Note: after receive data as Error the subscriber destroyed and never call callback again.
 	 */
-	cb: ((cancellationToken: CancellationToken, data: TProtocol | Error) => void | Promise<void>) | null;
+	cb: SubscriberCallback<TProtocol, TEvent> | null;
 }
+export interface SubscriberEvent<TProtocol> {
+	readonly cancellationToken: CancellationToken;
+	readonly data: TProtocol;
+}
+export type SubscriberCallback<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = (event: TEvent | Error) => void | Promise<void>;
+
 
 /** Define some kind of a transport for RPC implementations */
 export interface InvokeTransport<TIn, TOut> extends Disposable {
