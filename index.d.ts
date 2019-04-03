@@ -151,12 +151,16 @@ export interface Task<T = void> extends Promise<T> {
 // }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface Publisher<TProtocol> extends Disposable {
+export interface PublisherChannel<TProtocol> extends Disposable {
 	send(cancellationToken: CancellationToken, data: TProtocol): Task<void>;
 }
+/**
+ * @deprecated Use `PublisherChannel` instead
+ */
+export type Publisher<TProtocol> = PublisherChannel<TProtocol>;
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface Subscriber<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> extends Disposable {
+export interface SubscriberChannel<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> extends Disposable {
 	/** The callback function reference.
 	 * You can set null to the property to temporary disable notification.
 	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
@@ -164,17 +168,25 @@ export interface Subscriber<TProtocol, TEvent extends SubscriberEvent<TProtocol>
 	 */
 	cb: SubscriberCallback<TProtocol, TEvent> | null;
 }
+/**
+ * @deprecated Use `SubscriberChannel` instead
+ */
+export type Subscriber<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = SubscriberChannel<TProtocol, TEvent>;
+
 export interface SubscriberEvent<TProtocol> {
 	readonly cancellationToken: CancellationToken;
 	readonly data: TProtocol;
 }
 export type SubscriberCallback<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = (event: TEvent | Error) => void | Promise<void>;
 
-
 /** Define some kind of a transport for RPC implementations */
-export interface InvokeTransport<TIn, TOut> extends Disposable {
+export interface InvokeChannel<TIn, TOut> extends Disposable {
 	invoke(cancellationToken: CancellationToken, args: TIn): Task<TOut>;
 }
+/**
+ * @deprecated Use `InvokeChannel` instead
+ */
+export type InvokeTransport<TIn, TOut> = InvokeChannel<TIn, TOut>;
 
 //export interface StreamTransportLike<TMetadata> extends DisposableLike {
 //	stream(data: TMetadata, cancellationToken?: CancellationTokenLike): Promise<io.StreamLike>;
