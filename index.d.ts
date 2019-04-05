@@ -167,6 +167,8 @@ export interface SubscriberChannel<TProtocol, TEvent extends SubscriberEvent<TPr
 	 * Note: after receive data as Error the subscriber destroyed and never call callback again.
 	 */
 	cb: SubscriberCallback<TProtocol, TEvent> | null;
+	addHandler(cb: SubscriberCallback<TProtocol, TEvent>);
+	removeHandler(cb: SubscriberCallback<TProtocol, TEvent>);
 }
 /**
  * @deprecated Use `SubscriberChannel` instead
