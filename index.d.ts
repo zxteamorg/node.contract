@@ -92,53 +92,6 @@ export interface Logger {
 // 	deserializeFromStream(source: io.StreamLike): Promise<T>;
 // }
 
-export interface Task<T = void> extends Promise<T> {
-	readonly error: Error;
-	readonly result: T;
-
-	/**
-	 * Returns true if any of isSuccessed, isFaulted, isCancelled returns true
-	 */
-	readonly isCompleted: boolean;
-
-	/**
-	 * Task completed succesfully. You can read result value.
-	 */
-	readonly isSuccessed: boolean;
-
-	/**
-	 * Task completed with error. You can read error value.
-	 */
-	readonly isFaulted: boolean;
-
-	/**
-	 * Task completed with error. You cannot read nor result nor error value.
-	 */
-	readonly isCancelled: boolean;
-
-	/**
-	 * Attaches callbacks for the resolution and/or rejection of the Promise.
-	 * @param onfulfilled The callback to execute when the Promise is resolved.
-	 * @param onrejected The callback to execute when the Promise is rejected.
-	 * @returns A Promise for the completion of which ever callback is executed.
-	 */
-	then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: Error) => TResult2 | PromiseLike<TResult2>) | undefined | null): Task<TResult1 | TResult2>;
-
-	/**
-	 * Attaches a callback for only the rejection of the Promise.
-	 * @param onrejected The callback to execute when the Promise is rejected.
-	 * @returns A Promise for the completion of the callback.
-	 */
-	catch<TResult = never>(onrejected?: ((reason: Error) => TResult | PromiseLike<TResult>) | undefined | null): Task<T | TResult>;
-
-	/**
-	 * Create a wait promise.
-	 * The promise will resolve when task completed.
-	 * The promise never reject.
-	 */
-	wait(): Promise<void>;
-}
-
 // export declare namespace collections {
 // 	export interface EnumeratorLike<T> {
 // 		reset(): void | Promise<void>;
@@ -179,7 +132,48 @@ export interface SubscriberEvent<TProtocol> {
 	readonly cancellationToken: CancellationToken;
 	readonly data: TProtocol;
 }
-export type SubscriberCallback<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = (event: TEvent | Error) => void | Promise<void>;
+export type SubscriberCallback<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = (event: TEvent | Error) => void | Task<void>;
+
+export interface Task<T = void> {
+	readonly error: Error;
+	readonly result: T;
+	readonly cancellationToken: CancellationToken;
+	readonly promise: Promise<T>;
+
+	/**
+	 * Returns true if any of isSuccessed, isFaulted, isCancelled returns true
+	 */
+	readonly isCompleted: boolean;
+
+	/**
+	 * Task completed succesfully. You can read result value.
+	 */
+	readonly isSuccessed: boolean;
+
+	/**
+	 * Task completed with error. You can read error value.
+	 */
+	readonly isFaulted: boolean;
+
+	/**
+	 * Task completed with error. You cannot read nor result nor error value.
+	 */
+	readonly isCancelled: boolean;
+
+	/**
+	 * Attach a Continuation Task that executes when the current Task completes.
+	 * Note! The Continuation Task executes always (for success, cancel or fault states)
+	 * @param fn A worker of the Continuation Task
+	 */
+	continue<TContinue>(fnOrTask: ((parentTask: Task<T>) => TContinue | Promise<TContinue> | Task<TContinue>) | Task<TContinue>): Task<TContinue>;
+
+	/**
+	 * Create a wait (error safe) promise.
+	 * The promise will resolve when task completed.
+	 * The promise never reject.
+	 */
+	wait(): Promise<void>;
+}
 
 /** Define some kind of a transport for RPC implementations */
 export interface InvokeChannel<TIn, TOut> extends Disposable {
@@ -333,7 +327,7 @@ export type InvokeTransport<TIn, TOut> = InvokeChannel<TIn, TOut>;
 export interface ArgumentError extends Error {
 	readonly name: "ArgumentError";
 }
-export class AggregateError extends Error {
+export interface AggregateError extends Error {
 	readonly name: "AggregateError";
 	readonly innerError: Error;
 	readonly innerErrors: Array<Error>;

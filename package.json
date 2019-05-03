@@ -1,6 +1,6 @@
 {
 	"name": "@zxteam/contract",
-	"version": "3.2.4",
+	"version": "4.0.0",
 	"description": "ZXTeam's Contract interfaces",
 	"author": {
 		"name": "Maxim Anurin",
