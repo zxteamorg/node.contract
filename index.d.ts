@@ -27,6 +27,7 @@ export interface Configuration {
 	getInt(key: string, defaultValue?: number): number;
 	getObject<T>(key: string, defaultValue?: T): T;
 	getString(key: string, defaultValue?: string): string;
+	hasKey(key: string): boolean;
 }
 
 export interface Disposable {
