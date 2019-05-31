@@ -51,12 +51,68 @@ export interface FactorySync<T> {
  * The value is presented as stringified integer value with number of fraction digits.
  * The type doesn't have any limit to digits count and doesn't vulnerable rounding precision.
  * @example 
- * const moneyAmount: FinancialLike = ...
+ * const moneyAmount: Financial = ...
  * const amount: number = parseInt(moneyAmount.value) / (10 ^ moneyAmount.fraction)
  */
 export interface Financial {
 	readonly value: string;
 	readonly fraction: number;
+}
+export namespace Financial {
+	export const enum RoundMode {
+		/**
+		 * Round to the smallest Financial greater than or equal to a given Financial.
+		 * In other words: Round UP
+		 * Example of Ceil to fraction:2 
+		 * 0.595 -> 0.60
+		 * 0.555 -> 0.56
+		 * 0.554 -> 0.56
+		 * -0.595 -> -0.59
+		 * -0.555 -> -0.55
+		 * -0.554 -> -0.55
+		 */
+		Ceil = "Ceil",
+
+		/**
+		 * Round to the largest Financial less than or equal to a given Financial.
+		 * In other words: Round DOWN
+		 * Example of Floor to fraction:2 
+		 * 0.595 -> 0.59
+		 * 0.555 -> 0.55
+		 * 0.554 -> 0.55
+		 * -0.595 -> -0.60
+		 * -0.555 -> -0.56
+		 * -0.554 -> -0.56
+		 */
+		Floor = "Floor",
+
+		/**
+		 * Round to the Financial rounded to the nearest Financial.
+		 * In other words: Round classic
+		 * Example of Round to fraction:2 
+		 * 0.595 -> 0.60
+		 * 0.555 -> 0.56
+		 * 0.554 -> 0.55
+		 * -0.595 -> -0.60
+		 * -0.555 -> -0.55
+		 * -0.554 -> -0.55
+		 */
+		Round = "Round",
+
+		/**
+		 * Round to the Financial by removing fractional digits.
+		 * Works same as Floor in positive range
+		 * Works same as Ceil in negative range
+		 * Example of Trunc to fraction:2 
+		 * 0.595 -> 0.59
+		 * 0.555 -> 0.55
+		 * 0.554 -> 0.55
+		 * -0.595 -> -0.59
+		 * -0.555 -> -0.55
+		 * -0.554 -> -0.55
+		 */
+		Trunc = "Trunc"
+	}
 }
 
 export interface Logger {
