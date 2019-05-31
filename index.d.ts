@@ -48,15 +48,27 @@ export interface FactorySync<T> {
 
 /**
  * Represent financial amount type.
- * The value is presented as stringified integer value with number of fraction digits.
- * The type doesn't have any limit to digits count and doesn't vulnerable rounding precision.
- * @example 
- * const moneyAmount: Financial = ...
- * const amount: number = parseInt(moneyAmount.value) / (10 ^ moneyAmount.fraction)
+ * 123.456 represents as { sign: "+", whole: "123", fractional: "456 }
  */
 export interface Financial {
-	readonly value: string;
-	readonly fraction: number;
+	/**
+	 * "+" - for positive values
+	 * "-" - for negative values
+	 * null - for ZERO
+	 */
+	readonly sign: "+" | "-" | null;
+
+	/**
+	 * Whole part of number in string format
+	 * RegExp: ^(0|[1-9][0-9]*)$
+	 */
+	readonly whole: string;
+
+	/**
+	 * Fractional part of number in string format
+	 * RegExp: ^(0|[1-9][0-9]*)$
+	 */
+	readonly fractional: string;
 }
 export namespace Financial {
 	export const enum RoundMode {
