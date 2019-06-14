@@ -245,13 +245,9 @@ export interface Task<T = void> {
 }
 
 /** Define some kind of a transport for RPC implementations */
-export interface InvokeChannel<TIn, TOut> extends Disposable {
+export interface InvokeChannel<TIn, TOut> {
 	invoke(cancellationToken: CancellationToken, args: TIn): Task<TOut>;
 }
-/**
- * @deprecated Use `InvokeChannel` instead
- */
-export type InvokeTransport<TIn, TOut> = InvokeChannel<TIn, TOut>;
 
 //export interface StreamTransportLike<TMetadata> extends DisposableLike {
 //	stream(data: TMetadata, cancellationToken?: CancellationTokenLike): Promise<io.StreamLike>;
