@@ -20,14 +20,15 @@ export interface CancellationToken {
 }
 
 export interface Configuration {
+	get(key: string): boolean | number | string;
 	getBoolean(key: string, defaultValue?: boolean): boolean;
 	getConfiguration(configurationNamespace: string): Configuration;
 	getEnabled(key: string, defaultValue?: boolean): boolean;
 	getFloat(key: string, defaultValue?: number): number;
-	getInt(key: string, defaultValue?: number): number;
-	getObject<T>(key: string, defaultValue?: T): T;
+	getInteger(key: string, defaultValue?: number): number;
 	getString(key: string, defaultValue?: string): string;
 	hasKey(key: string): boolean;
+	keys(): ReadonlyArray<string>;
 }
 
 export interface Disposable {
