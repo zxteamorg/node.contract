@@ -237,6 +237,11 @@ export interface Task<T = void> {
 	continue<TContinue>(fnOrTask: ((parentTask: Task<T>) => TContinue | Promise<TContinue> | Task<TContinue>) | Task<TContinue>): Task<TContinue>;
 
 	/**
+	 * The method raise error if task: not completed, cancelled or faulted
+	 */
+	ensureSuccess(): void;
+
+	/**
 	 * Create a wait (error safe) promise.
 	 * The promise will resolve when task completed.
 	 * The promise never reject.
