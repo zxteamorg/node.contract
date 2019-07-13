@@ -1,17 +1,3 @@
-export interface Serializer<T> {
-	/**
-	 * Serialize an object to binary sequence.
-	 * @param obj The object to be serialized.
-	 */
-	serialize(obj: T): ArrayBuffer;
-
-	/**
-	 * Deserialize an object.
-	 * @param source The array buffer that contains bytes to deserialize.
-	 */
-	deserialize(source: ArrayBuffer): T;
-}
-
 export interface CancellationToken {
 	readonly isCancellationRequested: boolean;
 	addCancelListener(cb: Function): void;
@@ -32,19 +18,16 @@ export interface Configuration {
 }
 
 export interface Disposable {
-	dispose(): Task;
+	dispose(): Promise<void>;
 }
 
 export interface Initable extends Disposable {
-	init(): Task<this>;
+	init(): Promise<this>;
 }
 
-export interface Factory<T> {
-	create(cancellationToken?: CancellationToken): Task<T>;
-}
-
-export interface FactorySync<T> {
-	createSync(): T;
+/** Define some kind of a transport for RPC implementations */
+export interface InvokeChannel<TIn, TOut> {
+	invoke(cancellationToken: CancellationToken, args: TIn): Promise<TOut>;
 }
 
 /**
@@ -174,35 +157,35 @@ export interface Logger {
 // }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface PublisherChannel<TProtocol> extends Disposable {
-	send(cancellationToken: CancellationToken, data: TProtocol): Task<void>;
+export interface PublisherChannel<TData> extends Disposable {
+	send(cancellationToken: CancellationToken, data: TData): Promise<void>;
 }
-/**
- * @deprecated Use `PublisherChannel` instead
- */
-export type Publisher<TProtocol> = PublisherChannel<TProtocol>;
+
+export interface Serializer<T, TSerial = ArrayBuffer> {
+	/**
+	 * Serialize an object to binary sequence.
+	 * @param obj The object to be serialized.
+	 */
+	serialize(obj: T): TSerial;
+
+	/**
+	 * Deserialize an object.
+	 * @param source The array buffer that contains bytes to deserialize.
+	 */
+	deserialize(source: TSerial): T;
+}
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface SubscriberChannel<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> extends Disposable {
-	/** The callback function reference.
-	 * You can set null to the property to temporary disable notification.
-	 * @param data Repesent data from a subscriber's backend or Error if the subscriber crashes.
-	 * Note: after receive data as Error the subscriber destroyed and never call callback again.
-	 */
-	cb: SubscriberCallback<TProtocol, TEvent> | null;
-	addHandler(cb: SubscriberCallback<TProtocol, TEvent>): void;
-	removeHandler(cb: SubscriberCallback<TProtocol, TEvent>): void;
+export interface SubscriberChannel<TData, TEvent extends SubscriberChannel.Event<TData> = SubscriberChannel.Event<TData>> extends Disposable {
+	addHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
+	removeHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
 }
-/**
- * @deprecated Use `SubscriberChannel` instead
- */
-export type Subscriber<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = SubscriberChannel<TProtocol, TEvent>;
-
-export interface SubscriberEvent<TProtocol> {
-	readonly cancellationToken: CancellationToken;
-	readonly data: TProtocol;
+export namespace SubscriberChannel {
+	export interface Event<TData> {
+		readonly data: TData;
+	}
+	export type Callback<TData, TEvent extends Event<TData>> = (cancellationToken: CancellationToken, event: TEvent | Error) => void | Promise<void>;
 }
-export type SubscriberCallback<TProtocol, TEvent extends SubscriberEvent<TProtocol> = SubscriberEvent<TProtocol>> = (event: TEvent | Error) => void | Task<void>;
 
 export interface Task<T = void> {
 	readonly error: Error;
@@ -248,11 +231,6 @@ export interface Task<T = void> {
 	 * The promise never reject.
 	 */
 	wait(): Promise<void>;
-}
-
-/** Define some kind of a transport for RPC implementations */
-export interface InvokeChannel<TIn, TOut> {
-	invoke(cancellationToken: CancellationToken, args: TIn): Task<TOut>;
 }
 
 //export interface StreamTransportLike<TMetadata> extends DisposableLike {
@@ -384,28 +362,3 @@ export interface InvokeChannel<TIn, TOut> {
 // 		write(buf: ArrayBuffer, offset?: number, count?: number): Promise<void>;
 // 	}
 // }
-
-/*
- * 
- *  _____                              
- * | ____| _ __  _ __  ___   _ __  ___ 
- * |  _|  | '__|| '__|/ _ \ | '__|/ __|
- * | |___ | |   | |  | (_) || |   \__ \
- * |_____||_|   |_|   \___/ |_|   |___/
- * 
- */
-
-export interface ArgumentError extends Error {
-	readonly name: "ArgumentError";
-}
-export interface AggregateError extends Error {
-	readonly name: "AggregateError";
-	readonly innerError: Error;
-	readonly innerErrors: Array<Error>;
-}
-export interface CancelledError extends Error {
-	readonly name: "CancelledError";
-}
-export interface InvalidOperationError extends Error {
-	readonly name: "InvalidOperationError";
-}
