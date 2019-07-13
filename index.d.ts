@@ -22,7 +22,7 @@ export interface Disposable {
 }
 
 export interface Initable extends Disposable {
-	init(): Promise<this>;
+	init(cancellationToken: CancellationToken): Promise<this>;
 }
 
 /** Define some kind of a transport for RPC implementations */
