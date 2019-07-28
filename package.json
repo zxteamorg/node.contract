@@ -1,7 +1,7 @@
 {
 	"name": "@zxteam/contract",
-	"version": "6.0.3",
-	"description": "ZXTeam's Contract interfaces",
+	"version": "6.0.4",
+	"description": "ZXTeam's Common interfaces",
 	"author": {
 		"name": "ZXTeam",
 		"email": "pub@project.zxteam.org",
@@ -22,11 +22,11 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "ssh://git@dev.zxteam.net:22282/pub/node/contract.git"
+		"url": "https://github.com/zxteamorg/node.contract.git"
 	},
 	"bugs": {
-		"url": "https://dev.zxteam.net/pub/node/contract/issues"
+		"url": "https://github.com/zxteamorg/node.contract/issues"
 	},
-	"homepage": "https://dev.zxteam.net/pub/node/contract",
+	"homepage": "https://github.com/zxteamorg/node.contract",
 	"types": "./index.d.ts"
 }

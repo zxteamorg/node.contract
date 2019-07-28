@@ -161,6 +161,9 @@ export interface PublisherChannel<TData> extends Disposable {
 	send(cancellationToken: CancellationToken, data: TData): Promise<void>;
 }
 
+/**
+ * @deprecated Review interface for removal
+ */
 export interface Serializer<T, TSerial = ArrayBuffer> {
 	/**
 	 * Serialize an object to binary sequence.
@@ -189,6 +192,9 @@ export namespace SubscriberChannel {
 	}
 }
 
+/**
+ * @deprecated Review interface for removal
+ */
 export interface Task<T = void> {
 	readonly error: Error;
 	readonly result: T;
