@@ -1,17 +1,17 @@
 {
 	"name": "@zxteam/contract",
-	"version": "6.0.4",
-	"description": "ZXTeam's Common interfaces",
+	"version": "6.0.7",
+	"description": "ZXTeam's Contract provdes common interfaces",
 	"author": {
 		"name": "ZXTeam",
-		"email": "pub@project.zxteam.org",
-		"url": "http://www.zxteam.org"
+		"email": "pub@zxteam.org",
+		"url": "https://www.zxteam.org"
 	},
 	"contributors": [
 		{
 			"name": "Maxim Anurin",
 			"email": "maxim.anurin@zxteam.org",
-			"url": "http://www.anurin.name"
+			"url": "https://www.anurin.name"
 		},
 		{
 			"name": "Serhii Zghama",
