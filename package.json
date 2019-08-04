@@ -1,6 +1,6 @@
 {
 	"name": "@zxteam/contract",
-	"version": "6.0.7",
+	"version": "6.0.16",
 	"description": "ZXTeam's Contract provdes common interfaces",
 	"author": {
 		"name": "ZXTeam",

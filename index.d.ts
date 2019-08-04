@@ -32,29 +32,37 @@ export interface InvokeChannel<TIn, TOut> {
 
 /**
  * Represent financial amount type.
- * 123.456 represents as { sign: "+", whole: "123", fractional: "456 }
  */
 export interface Financial {
+	abs(): Financial;
+	add(value: Financial): Financial;
+	divide(value: Financial, roundMode?: Financial.RoundMode): Financial;
+	equals(value: Financial): boolean;
+	gt(value: Financial): boolean;
+	gte(value: Financial): boolean;
+	inverse(): Financial;
+	isNegative(): boolean;
+	isPositive(): boolean;
+	isZero(): boolean;
+	lt(value: Financial): boolean;
+	lte(value: Financial): boolean;
+	max(value: Financial): Financial;
+	min(value: Financial): Financial;
+	mod(value: Financial): Financial;
+	multiply(value: Financial, roundMode?: Financial.RoundMode): Financial;
+	round(fractionalDigits: Financial.FractionDigits, roundMode?: Financial.RoundMode): Financial;
+	subtract(value: Financial): Financial;
+	toFloat(): number;
+	toInt(): number;
 	/**
-	 * "+" - for positive values
-	 * "-" - for negative values
-	 * null - for ZERO
+	 * String representation of value
+	 * RegExp: ^([+-]?)(0|[1-9][0-9]*)(\.([0-9]+))?$
 	 */
-	readonly sign: "+" | "-" | null;
-
-	/**
-	 * Whole part of number in string format
-	 * RegExp: ^(0|[1-9][0-9]*)$
-	 */
-	readonly whole: string;
-
-	/**
-	 * Fractional part of number in string format
-	 * RegExp: ^(0|[1-9][0-9]*)$
-	 */
-	readonly fractional: string;
+	toString(): string;
 }
 export namespace Financial {
+	export type FractionDigits = number;
+
 	export const enum RoundMode {
 		/**
 		 * Round to the smallest Financial greater than or equal to a given Financial.
