@@ -138,7 +138,7 @@ export interface Logger {
 	 * Get sub-logger that belong to this logger
 	 * @param name Sub-logger name
 	 */
-	getLogger(name: string): Logger;
+	getLogger(name?: string): Logger;
 }
 
 // export interface StreamSerializerLike<T> {
