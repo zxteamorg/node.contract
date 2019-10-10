@@ -13,7 +13,12 @@ export interface Configuration {
 	getFloat(key: string, defaultValue?: number): number;
 	getInteger(key: string, defaultValue?: number): number;
 	getString(key: string, defaultValue?: string): string;
+	/**
+	 * @deprecated Use has(key: string) instead
+	 */
 	hasKey(key: string): boolean;
+	has(key: string): boolean;
+	hasNonEmpty(key: string): boolean;
 	keys(): ReadonlyArray<string>;
 }
 
