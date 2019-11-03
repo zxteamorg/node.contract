@@ -31,7 +31,7 @@ export interface Initable extends Disposable {
 }
 
 /** Define some kind of a transport for RPC implementations */
-export interface InvokeChannel<TIn, TOut> {
+export interface InvokeChannel<TIn = Uint8Array, TOut = Uint8Array> {
 	invoke(cancellationToken: CancellationToken, args: TIn): Promise<TOut>;
 }
 
@@ -166,7 +166,7 @@ export interface Serializer<T, TSerial = ArrayBuffer> {
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface SubscriberChannel<TData, TEvent extends SubscriberChannel.Event<TData> = SubscriberChannel.Event<TData>> extends Disposable {
+export interface SubscriberChannel<TData = Uint8Array, TEvent extends SubscriberChannel.Event<TData> = SubscriberChannel.Event<TData>> {
 	addHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
 	removeHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
 }
