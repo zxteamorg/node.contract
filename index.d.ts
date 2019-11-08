@@ -147,7 +147,7 @@ export interface Logger {
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface PublisherChannel<TData> extends Disposable {
+export interface PublisherChannel<TData = Uint8Array>{
 	send(cancellationToken: CancellationToken, data: TData): Promise<void>;
 }
 
