@@ -6,7 +6,7 @@ export interface CancellationToken {
 }
 
 export interface Configuration {
-	get(key: string): boolean | number | string | Uint8Array | URL;
+	get(key: string): boolean | number | string;
 	getBase64(key: string, defaultValue?: Uint8Array): Uint8Array;
 	getBoolean(key: string, defaultValue?: boolean): boolean;
 	getConfiguration(configurationNamespace: string): Configuration;
