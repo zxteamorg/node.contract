@@ -6,13 +6,15 @@ export interface CancellationToken {
 }
 
 export interface Configuration {
-	get(key: string): boolean | number | string;
+	get(key: string): boolean | number | string | Uint8Array | URL;
+	getBase64(key: string, defaultValue?: Uint8Array): Uint8Array;
 	getBoolean(key: string, defaultValue?: boolean): boolean;
 	getConfiguration(configurationNamespace: string): Configuration;
 	getEnabled(key: string, defaultValue?: boolean): boolean;
 	getFloat(key: string, defaultValue?: number): number;
 	getInteger(key: string, defaultValue?: number): number;
 	getString(key: string, defaultValue?: string): string;
+	getURL(key: string, defaultValue?: URL): URL;
 	/**
 	 * @deprecated Use has(key: string) instead
 	 */
