@@ -15,10 +15,7 @@ export interface Configuration {
 	getInteger(key: string, defaultValue?: number): number;
 	getString(key: string, defaultValue?: string): string;
 	getURL(key: string, defaultValue?: URL): URL;
-	/**
-	 * @deprecated Use has(key: string) instead
-	 */
-	hasKey(key: string): boolean;
+	hasNamespace(configurationNamespace: string): boolean;
 	has(key: string): boolean;
 	hasNonEmpty(key: string): boolean;
 	keys(): ReadonlyArray<string>;
@@ -149,7 +146,7 @@ export interface Logger {
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
-export interface PublisherChannel<TData = Uint8Array>{
+export interface PublisherChannel<TData = Uint8Array> {
 	send(cancellationToken: CancellationToken, data: TData): Promise<void>;
 }
 
