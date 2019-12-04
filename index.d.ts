@@ -175,6 +175,6 @@ export namespace SubscriberChannel {
 		readonly data: TData;
 	}
 	export interface Callback<TData, TEvent extends Event<TData> = Event<TData>> {
-		(cancellationToken: CancellationToken, event: TEvent | Error): void | Promise<void>;
+		(event: TEvent | Error): void | Promise<void>;
 	}
 }
