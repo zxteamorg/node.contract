@@ -26,6 +26,22 @@ export interface Disposable {
 	dispose(): Promise<void>;
 }
 
+/**
+ * EventChannel provides a channel to handle events asynchroniosly
+ */
+export interface EventChannel<TData, TEvent extends EventChannel.Event<TData> = EventChannel.Event<TData>> {
+	addHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
+	removeHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
+}
+export namespace EventChannel {
+	export interface Event<TData> {
+		readonly data: TData;
+	}
+	export interface Callback<TData, TEvent extends Event<TData> = Event<TData>> {
+		(event: TEvent): void | Promise<void>;
+	}
+}
+
 export interface Initable extends Disposable {
 	init(cancellationToken: CancellationToken): Promise<this>;
 }
