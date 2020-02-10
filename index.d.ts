@@ -30,8 +30,8 @@ export interface Disposable {
  * EventChannel provides a channel to handle events asynchroniosly
  */
 export interface EventChannel<TData, TEvent extends EventChannel.Event<TData> = EventChannel.Event<TData>> {
-	addHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
-	removeHandler(cb: SubscriberChannel.Callback<TData, TEvent>): void;
+	addHandler(cb: EventChannel.Callback<TData, TEvent>): void;
+	removeHandler(cb: EventChannel.Callback<TData, TEvent>): void;
 }
 export namespace EventChannel {
 	export interface Event<TData> {
