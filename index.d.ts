@@ -57,7 +57,7 @@ export interface InvokeChannel<TIn = Uint8Array, TOut = Uint8Array> {
 export interface Financial {
 	abs(): Financial;
 	add(value: Financial): Financial;
-	divide(value: Financial, roundMode?: Financial.RoundMode): Financial;
+	divide(value: Financial, fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
 	equals(value: Financial): boolean;
 	gt(value: Financial): boolean;
 	gte(value: Financial): boolean;
@@ -70,8 +70,8 @@ export interface Financial {
 	max(value: Financial): Financial;
 	min(value: Financial): Financial;
 	mod(value: Financial): Financial;
-	multiply(value: Financial, roundMode?: Financial.RoundMode): Financial;
-	round(fractionalDigits: Financial.FractionDigits, roundMode?: Financial.RoundMode): Financial;
+	multiply(value: Financial, fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
+	round(fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
 	subtract(value: Financial): Financial;
 	toFloat(): number;
 	toInt(): number;
