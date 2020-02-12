@@ -69,7 +69,7 @@ export interface Financial {
 	lte(value: Financial): boolean;
 	max(value: Financial): Financial;
 	min(value: Financial): Financial;
-	mod(value: Financial): Financial;
+	mod(value: Financial, fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
 	multiply(value: Financial, fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
 	round(fractionalDigits: Financial.FractionDigits, roundMode: Financial.RoundMode): Financial;
 	subtract(value: Financial): Financial;
