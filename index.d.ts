@@ -158,8 +158,9 @@ export interface Logger {
 	/**
 	 * Get sub-logger that belong to this logger
 	 * @param name Sub-logger name
+	 * @param context Define context variables for object-based logger adapter. For example to be render to Kibana.
 	 */
-	getLogger(name?: string): Logger;
+	getLogger(name?: string, context?: { readonly [name: string]: number | string | boolean }): Logger;
 }
 
 /** Define some kind of Publish-Subscribe pattern. See https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern */
