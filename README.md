@@ -1,3 +1,7 @@
+# DEPRECATED
+
+The project has been moved to https://github.com/freemework/common/tree/src-typescript
+
 # ZXTeam's Contract
 [![npm version badge](https://img.shields.io/npm/v/@zxteam/contract.svg)](https://www.npmjs.com/package/@zxteam/contract)
 [![downloads badge](https://img.shields.io/npm/dm/@zxteam/contract.svg)](https://www.npmjs.org/package/@zxteam/contract)
